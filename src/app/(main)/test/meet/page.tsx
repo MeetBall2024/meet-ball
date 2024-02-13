@@ -13,11 +13,16 @@ export default function TemporaryPage() {
         <h1>Buttons</h1>
         <button
           onClick={async () => {
+            const confirmDate = new Date();
+            confirmDate.setDate(confirmDate.getDate() + 7);
             const meet = await createMeet({
               name: 'test',
               description: 'test',
               meetType: MeetType.DATES,
               datesOrDays: ['2022-10-10'],
+              startTime: 0,
+              endTime: 47,
+              confirmTime: confirmDate,
             });
             setResult(JSON.stringify(meet));
           }}
@@ -46,7 +51,7 @@ export default function TemporaryPage() {
         <button
           onClick={async () => {
             await updateMeet(inputId, {
-                description: "updated!"
+              description: 'updated!',
             });
             setResult('update success.');
           }}
