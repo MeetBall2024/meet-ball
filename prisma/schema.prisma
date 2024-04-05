@@ -50,7 +50,7 @@ model User {
   accounts           Account[]
   sessions           Session[]
   managingMeets      Meet[]                @relation("Manage")
-  participatingMeets ParticipantsOnMeets[]
+  participatingMeets Participant[]
 }
 
 model Meet {
@@ -68,19 +68,19 @@ model Meet {
   manager            User                  @relation("Manage", fields: [managerId], references: [id], onDelete: Cascade)
   managerId          String
   // many-to-many
-  participants       ParticipantsOnMeets[]
+  participants       Participant[]
 }
 
-// junction table between User - participates - Meet
-model ParticipantsOnMeets {
-  meet        Meet    @relation(fields: [meetId], references: [id], onDelete: Cascade)
-  meetId      String
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  timeTable   Json?
-  hasAccepted Boolean @default(false)
-
-  @@id([meetId, userId])
+model Participant {
+  id           String  @id @default(cuid())
+  meet         Meet    @relation(fields: [meetId], references: [id], onDelete: Cascade)
+  meetId       String
+  user         User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String?
+  userName     String?
+  userPassword String?
+  userEmail    String?
+  timeTable    Json?
 }
 
 model VerificationToken {
