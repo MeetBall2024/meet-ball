@@ -54,7 +54,7 @@ export default async function MeetPage({
         startTime={meet.startTime}
         endTime={meet.endTime}
         datesOrDays={meet.datesOrDays}
-        type={meet.meetType}
+        type={meet.meetMode}
         timetable={combinedTimeTable}
         participantsNum={meet.participants.length}
         isManager={currentUser.id === meet.managerId}

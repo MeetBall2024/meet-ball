@@ -1,6 +1,6 @@
 'use server';
 
-import type { Meet, MeetType } from '@prisma/client';
+import type { Meet, MeetMode } from '@prisma/client';
 import type MeetWithParticipants from '../types/MeetWithParticipants';
 import type TimeTable from '../types/TimeTable';
 import prisma from '../lib/prisma';
@@ -51,7 +51,7 @@ export async function getMyParticipatingMeets(): Promise<Meet[]> {
 export type CreateMeetParams = {
   name: string;
   description?: string;
-  meetType: MeetType;
+  meetMode: MeetMode;
   startTime: number; // 0-47
   endTime: number; // 0-47
   datesOrDays: string[];
@@ -71,7 +71,6 @@ export async function createMeet(params: CreateMeetParams): Promise<Meet> {
         participants: {
           create: {
             userId: currentUser.id, // should involve itself as participant at first
-            hasAccepted: true, // should be true for manager by default
           },
         },
       },
@@ -132,7 +131,7 @@ export async function getMeetWithParticipants(
 export type UpdateMeetParams = {
   name?: string;
   description?: string;
-  meetType?: MeetType;
+  meetMode?: MeetMode;
   startTime?: number; // 0-47
   endTime?: number; // 0-47
   datesOrDays?: string[];

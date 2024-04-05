@@ -8,7 +8,7 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-enum MeetType {
+enum MeetMode {
   DATES
   DAYS
 }
@@ -57,7 +57,7 @@ model Meet {
   id                 String                @id @default(cuid())
   name               String
   description        String?
-  meetType           MeetType
+  meetMode           MeetMode
   startTime          Int // 0 - 47
   endTime            Int // 0 - 47
   datesOrDays        String[]

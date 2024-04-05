@@ -1,6 +1,6 @@
 'use server';
 
-import { Meet, MeetType } from '@prisma/client';
+import { Meet, MeetMode } from '@prisma/client';
 import { createMeet } from '@/controllers/meet';
 import { validateMeetMode, validateString } from '@/lib/validation';
 
@@ -12,7 +12,7 @@ export default async function createMeetFromInput(
 
   const meetDescription = formData.get('meetDescription')?.toString();
 
-  const meetMode = formData.get('meetMode')?.toString() as MeetType;
+  const meetMode = formData.get('meetMode')?.toString() as MeetMode;
   if (!validateMeetMode(meetMode)) throw new Error();
 
   const confirmDate = new Date(formData.get('confirmDate')!.toString());
@@ -37,7 +37,7 @@ export default async function createMeetFromInput(
     return await createMeet({
       name: meetName,
       description: meetDescription,
-      meetType: meetMode,
+      meetMode: meetMode,
       startTime,
       endTime,
       datesOrDays: meetSelections,
