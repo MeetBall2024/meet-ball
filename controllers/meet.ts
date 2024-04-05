@@ -197,7 +197,6 @@ export async function participateMeet(
       data: {
         meetId,
         userId: currentUser.id,
-        hasAccepted: true,
       },
     });
   } catch (error) {
