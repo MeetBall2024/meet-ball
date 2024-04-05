@@ -211,12 +211,10 @@ export async function getMyTimeTable(
 ): Promise<TimeTable | null> {
   try {
     const currentUser = await getCurrentUser();
-    const meet = await prisma.participant.findUniqueOrThrow({
+    const meet = await prisma.participant.findFirstOrThrow({
       where: {
-        meetId_userId: {
-          meetId: meetId,
-          userId: currentUser.id,
-        },
+        meetId: meetId,
+        userId: currentUser.id,
       },
     });
     if (!meet.timeTable) return null;
@@ -231,7 +229,7 @@ export async function getMyTimeTable(
 export async function updateTimeTable(meetId: string, timeTable: TimeTable) {
   try {
     const currentUser = await getCurrentUser();
-    const meet = await prisma.participant.update({
+    await prisma.participant.updateMany({
       where: {
         meetId: meetId,
         userId: currentUser.id,
@@ -240,7 +238,6 @@ export async function updateTimeTable(meetId: string, timeTable: TimeTable) {
         timeTable,
       },
     });
-    return meet;
   } catch (error) {
     console.error(error);
     throw error;
