@@ -1,8 +1,8 @@
 'use server';
 
 import type { User, AuthenticatedUser } from 'next-auth';
-import { getCurrentUser } from '../lib/authentication';
-import prisma from '../lib/prisma';
+import { getCurrentUser } from '@/lib/authentication';
+import prisma from '@/lib/prisma';
 
 export async function getMyInfo(): Promise<AuthenticatedUser> {
   try {

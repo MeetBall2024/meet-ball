@@ -1,10 +1,10 @@
 'use server';
 
 import type { Meet, MeetMode } from '@prisma/client';
-import type MeetWithParticipants from '../types/MeetWithParticipants';
-import type TimeTable from '../types/TimeTable';
-import prisma from '../lib/prisma';
-import { getCurrentUser } from '../lib/authentication';
+import type MeetWithParticipants from '@/types/MeetWithParticipants';
+import type TimeTable from '@/types/TimeTable';
+import prisma from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/authentication';
 import { revalidatePath, revalidateTag } from 'next/cache';
 
 // get current user's managing meets
