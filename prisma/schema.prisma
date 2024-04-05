@@ -2,6 +2,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+  namespace = "PrismaJson"
+  allowAny = false
+}
+
 datasource db {
   provider  = "postgresql"
   url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
@@ -62,6 +68,7 @@ model Meet {
   endTime            Int // 0 - 47
   datesOrDays        String[]
   confirmTime        DateTime
+  /// [TimeTable]
   confirmedTimeTable Json?
   password           String? // hashed value
   // one-to-many
@@ -80,6 +87,7 @@ model Participant {
   userName     String?
   userPassword String?
   userEmail    String?
+  /// [TimeTable]
   timeTable    Json?
 }
 
