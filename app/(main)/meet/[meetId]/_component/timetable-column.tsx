@@ -76,6 +76,7 @@ export default function TimeTableColumn({
   isManager,
   confirmedTimeTable,
   editMode,
+  handleMouseMove,
 }: {
   date: string;
   startTime: number;
@@ -89,6 +90,7 @@ export default function TimeTableColumn({
     current: TimeTable;
   };
   editMode: boolean;
+  handleMouseMove: (e: React.MouseEvent) => void;
 }) {
   const label = useRef('');
   const days = ['월', '화', '수', '목', '금', '토', '일'];
@@ -117,7 +119,7 @@ export default function TimeTableColumn({
   }
 
   return (
-    <div>
+    <div onMouseMove={e => handleMouseMove(e)}>
       <p className="flex justify-center whitespace-pre-wrap h-[30px]">
         {label.current}
       </p>
