@@ -35,7 +35,7 @@ export default async function MeetPage({
     combinedTimeTable[key] = {};
   }
   for (const participant of meet.participants) {
-    const userId = participant.userId;
+    const userId = participant.userId ?? participant.userName as string; // TODO: make function for getting userId or userName for temporary user
     const currentTimeTable = participant.timeTable as Prisma.JsonObject;
     for (const key in currentTimeTable) {
       combinedTimeTable[key][userId] = currentTimeTable[key] as number[];
