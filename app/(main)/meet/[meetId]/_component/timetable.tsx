@@ -7,6 +7,7 @@ import { Meet } from '@prisma/client';
 import { updateConfirmedTimeTable } from '@/controllers/meet';
 import Link from 'next/link';
 import TimeTable from '@/types/TimeTable';
+import ParticipantsPanel from './participants-panel';
 
 type TimeTableComponentProps = {
   startTime: number;
@@ -41,6 +42,13 @@ export default function TimeTableComponent({
   );
   const [hoverData, setHoverData] = useState<string[]>([]);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [location, setLocation] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  });
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setLocation({ x: e.clientX, y: e.clientY });
+  };
 
   type gridColumnsType = {
     [key: number]: string;
@@ -107,17 +115,15 @@ export default function TimeTableComponent({
               isManager={isManager}
               confirmedTimeTable={confirmedTimeTableRef}
               editMode={editMode}
+              handleMouseMove={handleMouseMove}
             />
           ))}
         </div>
-        <div className="bg-cardColor w-3/4 rounded-lg p-6 mt-8 text-[16px] flex flex-col gap-4 m-10">
-          <p>
-            응답자: {hoverData.length}/{participantsNum}
-          </p>
-          {hoverData.map((data, i) => (
-            <p key={i}>{data}</p>
-          ))}
-        </div>
+        <ParticipantsPanel
+          hoverData={hoverData}
+          participantsNum={participantsNum}
+          location={location}
+        />
       </div>
     </>
   );
