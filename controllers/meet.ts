@@ -1,10 +1,10 @@
 'use server';
 
-import type { Meet, MeetType } from '@prisma/client';
-import type MeetWithParticipants from '../types/MeetWithParticipants';
-import type TimeTable from '../types/TimeTable';
-import prisma from '../lib/prisma';
-import { getCurrentUser } from '../lib/authentication';
+import type { Meet, MeetMode } from '@prisma/client';
+import type MeetWithParticipants from '@/types/MeetWithParticipants';
+import type TimeTable from '@/types/TimeTable';
+import prisma from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/authentication';
 import { revalidatePath, revalidateTag } from 'next/cache';
 
 // get current user's managing meets
@@ -51,7 +51,7 @@ export async function getMyParticipatingMeets(): Promise<Meet[]> {
 export type CreateMeetParams = {
   name: string;
   description?: string;
-  meetType: MeetType;
+  meetMode: MeetMode;
   startTime: number; // 0-47
   endTime: number; // 0-47
   datesOrDays: string[];
@@ -71,7 +71,6 @@ export async function createMeet(params: CreateMeetParams): Promise<Meet> {
         participants: {
           create: {
             userId: currentUser.id, // should involve itself as participant at first
-            hasAccepted: true, // should be true for manager by default
           },
         },
       },
@@ -132,7 +131,7 @@ export async function getMeetWithParticipants(
 export type UpdateMeetParams = {
   name?: string;
   description?: string;
-  meetType?: MeetType;
+  meetMode?: MeetMode;
   startTime?: number; // 0-47
   endTime?: number; // 0-47
   datesOrDays?: string[];
@@ -194,11 +193,10 @@ export async function participateMeet(
 
   const currentUser = await getCurrentUser();
   try {
-    await prisma.participantsOnMeets.create({
+    await prisma.participant.create({
       data: {
         meetId,
         userId: currentUser.id,
-        hasAccepted: true,
       },
     });
   } catch (error) {
@@ -207,67 +205,16 @@ export async function participateMeet(
   }
 }
 
-// // add participants to the meet, allowed only by manager
-// export async function addParticipantsToMeet(
-//   meetId: string,
-//   userIds: string[]
-// ): Promise<void> {
-//   try {
-//     const currentUser = await getCurrentUser();
-//     const meet = await getMeet(meetId);
-//     if (meet.managerId !== currentUser.id)
-//       throw new Error('Only manager can add participants.');
-
-//     // Create an array of ParticipantsOnMeets objects
-//     const participants = userIds.map(userId => ({
-//       meetId,
-//       userId,
-//     }));
-
-//     // Use the createMany method on the ParticipantsOnMeets model to add all participants at once
-//     await prisma.participantsOnMeets.createMany({
-//       data: participants,
-//       skipDuplicates: true, // This ensures users are not added twice
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// }
-
-// export async function acceptMeetInvitation(meetId: string) {
-//   try {
-//     const currentUser = await getCurrentUser();
-//     const meet = await prisma.participantsOnMeets.update({
-//       where: {
-//         meetId_userId: {
-//           meetId: meetId,
-//           userId: currentUser.id,
-//         },
-//       },
-//       data: {
-//         hasAccepted: true,
-//       },
-//     });
-//     return meet;
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// }
-
 // get current user's time table of the meet
 export async function getMyTimeTable(
   meetId: string
 ): Promise<TimeTable | null> {
   try {
     const currentUser = await getCurrentUser();
-    const meet = await prisma.participantsOnMeets.findUniqueOrThrow({
+    const meet = await prisma.participant.findFirstOrThrow({
       where: {
-        meetId_userId: {
-          meetId: meetId,
-          userId: currentUser.id,
-        },
+        meetId: meetId,
+        userId: currentUser.id,
       },
     });
     if (!meet.timeTable) return null;
@@ -282,18 +229,15 @@ export async function getMyTimeTable(
 export async function updateTimeTable(meetId: string, timeTable: TimeTable) {
   try {
     const currentUser = await getCurrentUser();
-    const meet = await prisma.participantsOnMeets.update({
+    await prisma.participant.updateMany({
       where: {
-        meetId_userId: {
-          meetId: meetId,
-          userId: currentUser.id,
-        },
+        meetId: meetId,
+        userId: currentUser.id,
       },
       data: {
         timeTable,
       },
     });
-    return meet;
   } catch (error) {
     console.error(error);
     throw error;

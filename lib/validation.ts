@@ -1,4 +1,4 @@
-import { MeetType } from '@prisma/client';
+import { MeetMode } from '@prisma/client';
 
 function validateString(str?: string): str is string {
   if (!str || str.length === 0) {
@@ -7,8 +7,8 @@ function validateString(str?: string): str is string {
   return true;
 }
 
-function validateMeetMode(str?: string): str is MeetType {
-  if (!str || !Object.values(MeetType).includes(str as MeetType)) {
+function validateMeetMode(str?: string): str is MeetMode {
+  if (!str || !Object.values(MeetMode).includes(str as MeetMode)) {
     return false;
   }
   return true;

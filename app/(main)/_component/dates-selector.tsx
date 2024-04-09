@@ -3,7 +3,7 @@ import { useState } from 'react';
 import useMultiSelect from '@/hooks/useMultiSelect';
 import Button from '@/components/button/button';
 import { Calendar, WeekCalendar } from './calendar';
-import { MeetType } from '@prisma/client';
+import { MeetMode } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 
 type ModeButtonProps = {
@@ -28,7 +28,7 @@ function ModeSelector({
   handleModeChange,
 }: {
   mode: string;
-  handleModeChange: (newMode: MeetType) => void;
+  handleModeChange: (newMode: MeetMode) => void;
 }) {
   return (
     <div>
@@ -47,7 +47,7 @@ function ModeSelector({
 }
 
 export default function DatesSelector() {
-  const [mode, setMode] = useState<MeetType>(MeetType.DATES);
+  const [mode, setMode] = useState<MeetMode>(MeetMode.DATES);
   const [selectedDates, setSelectedDates] = useState<Date[] | undefined>([]);
   const { selected: selectedDays, handleSelected: handleSelectedDays } =
     useMultiSelect<string>([]);
@@ -68,7 +68,7 @@ export default function DatesSelector() {
     <div className="mt-8 flex flex-col w-full max-w-[730px] mobile:max-w-[500px]">
       <ModeSelector mode={mode} handleModeChange={setMode} />
       <div className="flex flex-col items-center">
-        {mode == MeetType.DAYS ? (
+        {mode == MeetMode.DAYS ? (
           <WeekCalendar
             selectedDays={selectedDays}
             handleSelectedDays={handleSelectedDays}
@@ -90,7 +90,7 @@ export default function DatesSelector() {
           onClick={async () => {
             let selections: string[] = [];
 
-            if (mode == MeetType.DATES) {
+            if (mode == MeetMode.DATES) {
               if (selectedDates == undefined || selectedDates.length == 0) {
                 alert('You should select at least 1 date.');
                 return;
@@ -98,7 +98,7 @@ export default function DatesSelector() {
               selections = selectedDates
                 .sort((a, b) => a.getTime() - b.getTime())
                 .map(a => a.toISOString().split('T')[0]);
-            } else if (mode == MeetType.DAYS) {
+            } else if (mode == MeetMode.DAYS) {
               if (selectedDays.length == 0) {
                 alert('You should select at least 1 day.');
                 return;

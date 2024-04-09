@@ -23,7 +23,7 @@ export default async function EditTimetablePage({
         startTime={meet.startTime}
         endTime={meet.endTime}
         datesOrDays={meet.datesOrDays}
-        type={meet.meetType}
+        type={meet.meetMode}
         timeTable={userTimeTable}
       />
     </>
